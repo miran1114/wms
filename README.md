@@ -1,93 +1,226 @@
-# warehouse-management-system
+# 智能仓库管理系统（WMS）
 
+> 版本：v0.1.0 · 状态：开发中
 
+## 1. 项目概述
 
-## Getting started
+- 项目名称：智能仓库管理系统（WMS）
+- 版本号：v0.1.0
+- 核心功能：
+  - 库存管理（展示、搜索、排序、增减库存、定价调整）
+  - AI 分析（安全库存建议、动态定价、促销推荐），对接本地 Ollama 的 Qwen2.5-14b
+  - 市场数据与价格历史、库存历史记录与可视化
+  - 操作日志记录与查询
+- 技术栈：
+  - 后端：Python 3.10+、Django 5.x、Django REST Framework、SQLite（默认）
+  - 前端：React 18 + TypeScript、Vite、Ant Design、@ant-design/charts
+  - AI：LangChain + Ollama（本地 API `http://localhost:11434`）
+- 项目状态：开发中（Dev）
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 2. 环境要求
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- 系统依赖：
+  - Python ≥ 3.10
+  - Node.js ≥ 18.x（推荐 LTS）
+- 第三方服务依赖：
+  - 可选：Ollama（本地）及模型 `qwen2.5:14b`
+- 环境变量（后端 `.env`，可选）：
 
-## Add your files
+| 变量名 | 说明 | 默认值 |
+|---|---|---|
+| `DJANGO_SECRET_KEY` | Django 密钥 | `dev-secret-key` |
+| `OLLAMA_BASE_URL` | Ollama 地址 | `http://localhost:11434` |
+| `OLLAMA_MODEL` | 模型名 | `qwen2.5:14b` |
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+- 环境变量（前端 `.env`）：
 
+| 变量名 | 说明 | 默认值 |
+|---|---|---|
+| `VITE_API_BASE_URL` | 后端 API 基址 | `http://localhost:8888` |
+| `VITE_OLLAMA_BASE_URL` | Ollama 地址 | `http://localhost:11434` |
+| `VITE_OLLAMA_MODEL` | 模型名 | `qwen2.5:14b` |
+
+## 3. 安装部署指南
+
+```bash
+# 克隆仓库（HTTPS）
+git clone <repo-url> wms
+cd wms
+
+# 后端依赖安装
+python -m pip install -r requirements.txt
+
+# 数据库迁移（SQLite 默认）
+python manage.py makemigrations
+python manage.py migrate
+
+# 生成 Mock 数据（可选参数 --count --days）
+python manage.py seed_wms_data --count 100 --days 30
+
+# 启动后端（默认 8888）
+python manage.py runserver 0.0.0.0:8888
 ```
-cd existing_repo
-git remote add origin http://192.168.10.100/Zengsc/warehouse-management-system.git
-git branch -M main
-git push -uf origin main
+
+```bash
+# 前端（建议在项目根的同一目录运行）
+# 安装依赖
+npm install
+
+# 开发启动（Vite）
+npm run dev
+# 本地访问：http://localhost:5173/ （若端口占用会自动切换）
 ```
 
-## Integrate with your tools
+## 4. 代码框架说明
 
-- [ ] [Set up project integrations](http://192.168.10.100/Zengsc/warehouse-management-system/-/settings/integrations)
+后端（Django）：
+```
+.
+├── wms/                      # 项目配置（settings、urls、wsgi、asgi）
+├── core/                     # 通用：视图、管理命令、日志模型
+│   ├── views.py              # 轻薄的视图层（Service-Layer 入口）
+│   ├── models.py             # OperationLog 模型
+│   └── management/commands/  # seed_wms_data 等脚本
+├── inventory/                # 商品与库存域
+│   ├── models.py             # Product、Inventory、Transaction
+│   └── migrations/           # 迁移文件
+├── market/                   # 市场数据域
+│   ├── models.py             # MarketData
+│   └── migrations/
+├── pricing/                  # 定价域
+│   ├── models.py             # PricingLog
+│   └── migrations/
+├── ai_agent/                 # 与 Ollama 的交互封装
+│   └── engine.py             # DecisionEngine（分析与定价）
+└── manage.py
+```
 
-## Collaborate with your team
+前端（React + TS）：
+```
+src/
+├── components/               # 组件（表格、弹窗、布局等）
+├── pages/                    # 页面（Home、ProductDetail、AIAnalysis、Settings）
+├── services/                 # API 与 WebSocket/Ollama 封装
+├── stores/                   # Zustand 状态管理
+├── types/                    # TS 类型定义（inventory、api、analysis）
+├── utils/                    # 工具与常量
+└── App.tsx, main.tsx         # 应用入口
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+> 对应到模板：controllers ≈ views/engine（业务入口与服务）、models ≈ Django 各域模型、utils ≈ `src/utils` 与后端工具封装。
 
-## Test and Deploy
+## 5. 接口规范
 
-Use the built-in continuous integration in GitLab.
+- 设计原则：RESTful、JSON 返回统一结构：
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```json
+{
+  "code": 0,
+  "data": { ... },
+  "message": "optional"
+}
+```
 
-***
+- 核心接口：
 
-# Editing this README
+| 方法 | 路径 | 说明 |
+|---|---|---|
+| GET | `/api/inventory` | 列表，支持 `search`、`sortBy`、`sortOrder`、分页；`all=1` 返回全量 |
+| POST | `/api/inventory` | 创建商品（含初始库存） |
+| PUT | `/api/inventory/{id}/stock` | 增减库存：`{"change":10,"operation":"increase|decrease"}` |
+| PUT | `/api/inventory/{id}/price` | 改价：`{"price":123.45,"reason":"..."}` |
+| DELETE | `/api/inventory/{id}` | 删除商品 |
+| GET | `/api/inventory/{id}/price-history` | 价格历史（逐日） |
+| GET | `/api/inventory/{id}/stock-history` | 库存历史（逐日） |
+| POST | `/api/ai/analyze-inventory/` | 运行安全库存分析（写入建议） |
+| POST | `/api/ai/update-pricing/` | 动态定价（写入价格日志与现价） |
+| GET | `/api/dashboard/` | 概览与紧急补货列表 |
+| GET | `/api/logs` | 操作日志查询（分页与筛选） |
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- 请求/响应示例：
 
-## Suggestions for a good README
+更新库存：
+```http
+PUT /api/inventory/2/stock
+Content-Type: application/json
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+{"change":30,"operation":"increase"}
+```
+响应：
+```json
+{
+  "code": 0,
+  "data": {
+    "id": "2",
+    "name": "商品名",
+    "stock": 59,
+    "unit": "件",
+    "price": 160.0,
+    "lastUpdated": "2025-12-19T09:00:10.545Z",
+    "lowStockWarning": false,
+    "category": "家居",
+    "sku": "SKU1001",
+    "location": "A1",
+    "minSafetyStock": 20,
+    "maxCapacity": 1000
+  }
+}
+```
 
-## Name
-Choose a self-explaining name for your project.
+- 错误代码对照：
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+| code | 说明 |
+|---|---|
+| 0 | 成功 |
+| 1 | 参数校验失败 |
+| 2 | 资源不存在 |
+| 3 | 服务器内部错误 |
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+- 版本控制策略：
+  - 预留路径前缀：`/api/v1/...`（当前为 v0 实验版）
+  - 重大变更以路径和响应结构增量方式演进
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+## 6. 使用教程
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+- 典型场景：
+  1. 生成数据 → 启动后端 → 启动前端
+  2. 在首页查看库存概览，搜索名称/SKU/ID 过滤商品
+  3. 进入商品详情，编辑库存与价格，查看“价格历史/库存历史”曲线，悬停查看具体数值
+  4. 在 AI 分析页：
+     - 全局分析（按钮“开始AI分析”）基于全量库存生成建议
+     - 根据建议“一键补货/一键减库/一键改价”，确认后实时更新数据库
+  5. 在日志页查看操作记录（库存增减/改价/AI分析）
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- 常见问题：
+  - 前端搜索不到：确认后端 `/api/inventory` 正常，并检查 `VITE_API_BASE_URL`
+  - AI 分析失败：本地未启动 Ollama 或模型缺失；前端/后端均有降级策略（规则推断）
+  - 跨域：后端开启 CORS（已配置），确保前端基址正确
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## 7. 开发指南
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+- 代码风格：
+  - 前端：推荐 ESLint + Prettier（TypeScript）
+  - 后端：PEP8（使用 `black`/`isort`）
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+示例（前端）：
+```bash
+npm i -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin prettier eslint-config-prettier eslint-plugin-react
+```
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+- 分支管理：
+  - `main`：稳定分支
+  - `feature/*`：新功能开发
+  - `fix/*`：问题修复
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+- 提交信息规范（Conventional Commits）：
+  - `feat: 增加库存建议一键执行`
+  - `fix: 修复详情页保存库存加法错误`
+  - `docs: 补充安装指南`
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+---
 
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+更多信息：
+- 后端入口：`wms/urls.py`
+- AI 服务：`ai_agent/engine.py`
+- 种子脚本：`core/management/commands/seed_wms_data.py`
+- 问题反馈：请在提交 Issue 时附带接口响应与日志片段。

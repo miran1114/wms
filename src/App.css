@@ -1,0 +1,346 @@
+/* 全局样式 */
+@import './styles/responsive.css';
+
+/* 自定义主题样式 */
+:root {
+  --primary-color: #1890ff;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #ff4d4f;
+  --border-radius: 6px;
+}
+
+/* 全局布局样式 */
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.app-header {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-content {
+  background: transparent;
+  padding: 24px;
+  min-height: calc(100vh - 64px);
+}
+
+/* 卡片样式增强 */
+.ant-card {
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ant-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.ant-card-head {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 24px;
+}
+
+/* 表格样式增强 */
+.ant-table {
+  background: #fff;
+  border-radius: var(--border-radius);
+}
+
+.ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 600;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #fafafa;
+}
+
+/* 按钮样式增强 */
+.ant-btn {
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+}
+
+.ant-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  border: none;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+}
+
+/* 输入框样式增强 */
+.ant-input,
+.ant-select-selector,
+.ant-picker {
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+}
+
+.ant-input:focus,
+.ant-input:hover,
+.ant-select-selector:focus,
+.ant-select-selector:hover,
+.ant-picker:focus,
+.ant-picker:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 标签样式增强 */
+.ant-tag {
+  border-radius: var(--border-radius);
+  font-weight: 500;
+}
+
+/* 模态框样式增强 */
+.ant-modal {
+  border-radius: var(--border-radius);
+}
+
+.ant-modal-header {
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+}
+
+/* 统计卡片样式 */
+.stat-card {
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  transform: translateY(-2px);
+}
+
+.stat-card .ant-statistic-title {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.stat-card .ant-statistic-content {
+  color: var(--primary-color);
+  font-size: 28px;
+  font-weight: 600;
+}
+
+/* 图表容器样式 */
+.chart-container {
+  background: #fff;
+  border-radius: var(--border-radius);
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+/* 搜索栏样式 */
+.search-section {
+  background: #fff;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 操作栏样式 */
+.action-section {
+  background: #fff;
+  border-radius: var(--border-radius);
+  padding: 16px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* 加载动画 */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 状态指示器 */
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-online {
+  background-color: var(--success-color);
+  box-shadow: 0 0 0 2px rgba(82, 196, 26, 0.2);
+}
+
+.status-offline {
+  background-color: var(--error-color);
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2);
+}
+
+.status-warning {
+  background-color: var(--warning-color);
+  box-shadow: 0 0 0 2px rgba(250, 173, 20, 0.2);
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 动画效果 */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .ant-layout {
+    background: #fff !important;
+  }
+  
+  .ant-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    break-inside: avoid;
+  }
+  
+  .ant-table {
+    font-size: 10px !important;
+  }
+}
+
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .app-container {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+  
+  .ant-card {
+    background: #1f1f1f;
+    border-color: #303030;
+  }
+  
+  .ant-table {
+    background: #1f1f1f;
+    color: #fff;
+  }
+  
+  .ant-table-thead > tr > th {
+    background: #141414;
+    color: #fff;
+    border-bottom-color: #303030;
+  }
+  
+  .ant-table-tbody > tr:hover > td {
+    background: #141414;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .ant-btn-primary {
+    border: 2px solid #000;
+  }
+  
+  .ant-input,
+  .ant-select-selector,
+  .ant-picker {
+    border: 2px solid #000;
+  }
+  
+  .ant-table-thead > tr > th {
+    border-bottom: 3px solid #000;
+  }
+}
+
+/* 减少动画模式支持 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

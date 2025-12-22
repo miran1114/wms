@@ -1,0 +1,302 @@
+/* 响应式设计样式 */
+
+/* 移动端样式 (max-width: 768px) */
+@media (max-width: 768px) {
+  .ant-layout-content {
+    margin: 16px 8px !important;
+    padding: 16px !important;
+  }
+
+  .ant-card {
+    margin-bottom: 12px !important;
+  }
+
+  .ant-card-head {
+    padding: 0 16px !important;
+  }
+
+  .ant-card-body {
+    padding: 16px !important;
+  }
+
+  .ant-table {
+    font-size: 12px !important;
+  }
+
+  .ant-table-thead > tr > th {
+    padding: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .ant-statistic-title {
+    font-size: 12px !important;
+  }
+
+  .ant-statistic-content {
+    font-size: 20px !important;
+  }
+
+  .ant-space-item {
+    margin-bottom: 8px !important;
+  }
+
+  .ant-btn {
+    font-size: 12px !important;
+    height: 28px !important;
+    padding: 4px 12px !important;
+  }
+
+  .ant-input,
+  .ant-select-selector,
+  .ant-picker {
+    font-size: 12px !important;
+  }
+
+  .ant-modal {
+    max-width: 95vw !important;
+    margin: 16px auto !important;
+  }
+
+  .ant-modal-body {
+    padding: 16px !important;
+  }
+
+  .ant-drawer-body {
+    padding: 16px !important;
+  }
+
+  /* 移动端表格滚动 */
+  .ant-table-content {
+    overflow-x: auto !important;
+  }
+
+  /* 移动端卡片布局 */
+  .mobile-card-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* 移动端按钮组 */
+  .mobile-button-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .mobile-button-group .ant-btn {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* 平板样式 (min-width: 769px and max-width: 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .ant-layout-content {
+    margin: 20px 12px !important;
+    padding: 20px !important;
+  }
+
+  .ant-card {
+    margin-bottom: 16px !important;
+  }
+
+  .ant-table {
+    font-size: 13px !important;
+  }
+
+  .ant-statistic-title {
+    font-size: 13px !important;
+  }
+
+  .ant-statistic-content {
+    font-size: 24px !important;
+  }
+
+  /* 平板卡片网格 */
+  .tablet-card-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+}
+
+/* 桌面端样式 (min-width: 1025px) */
+@media (min-width: 1025px) {
+  .desktop-card-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  .desktop-table-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* 通用响应式工具类 */
+.responsive-container {
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 16px !important;
+}
+
+.responsive-card {
+  width: 100% !important;
+  margin-bottom: 16px !important;
+}
+
+.responsive-button {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.responsive-text {
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 表格响应式处理 */
+.responsive-table {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.responsive-table table {
+  min-width: 600px !important;
+}
+
+/* 图表响应式处理 */
+.responsive-chart {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 300px !important;
+}
+
+/* 模态框响应式处理 */
+.responsive-modal {
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+}
+
+.responsive-modal .ant-modal-body {
+  max-height: calc(90vh - 110px) !important;
+  overflow-y: auto !important;
+}
+
+/* 表单响应式处理 */
+.responsive-form {
+  display: grid !important;
+  gap: 16px !important;
+}
+
+@media (min-width: 768px) {
+  .responsive-form {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-form {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* 导航栏响应式处理 */
+.responsive-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+}
+
+@media (max-width: 768px) {
+  .responsive-header {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+}
+
+/* 搜索栏响应式处理 */
+.responsive-search {
+  display: flex !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+@media (max-width: 768px) {
+  .responsive-search {
+    flex-direction: column !important;
+  }
+  
+  .responsive-search .ant-input,
+  .responsive-search .ant-select,
+  .responsive-search .ant-picker {
+    width: 100% !important;
+  }
+}
+
+/* 统计卡片响应式处理 */
+.responsive-stat-card {
+  min-height: 120px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+@media (max-width: 768px) {
+  .responsive-stat-card {
+    min-height: 100px !important;
+    padding: 16px !important;
+  }
+  
+  .responsive-stat-card .ant-statistic-title {
+    font-size: 12px !important;
+  }
+  
+  .responsive-stat-card .ant-statistic-content {
+    font-size: 18px !important;
+  }
+}
+
+/* 加载状态响应式处理 */
+.responsive-skeleton {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .responsive-skeleton {
+    padding: 16px !important;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .ant-layout-header,
+  .ant-layout-sider,
+  .ant-btn,
+  .ant-pagination,
+  .no-print {
+    display: none !important;
+  }
+  
+  .ant-table {
+    font-size: 10px !important;
+  }
+  
+  .ant-card {
+    break-inside: avoid !important;
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+}
