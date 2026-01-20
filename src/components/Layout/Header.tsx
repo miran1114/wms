@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu, Badge, Avatar, Dropdown, Button, Space, Tooltip } from 'antd';
+import { Layout, Menu, Badge, Avatar, Dropdown, Button, Space, Tooltip, Tag } from 'antd';
 import { 
   BellOutlined, 
   UserOutlined, 
@@ -8,16 +8,30 @@ import {
   DashboardOutlined,
   BarChartOutlined,
   HistoryOutlined,
-  RobotOutlined
+  RobotOutlined,
+  LineChartOutlined,
+  TeamOutlined,
+  ExperimentOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { APP_CONFIG } from '../../utils/constants';
+import { useAuthStore } from '../../stores/authStore';
 
 const { Header: AntHeader } = Layout;
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuthStore();
+  
+  // Helper function for permission check
+  const hasPermission = (permission: string) => {
+    if (!user) return false;
+    if (user.is_admin) return true;
+    if (permission === 'view_analytics') return user.can_view_analytics;
+    if (permission === 'edit_inventory') return user.can_edit_inventory;
+    return false;
+  };
 
   const menuItems = [
     {
@@ -29,6 +43,33 @@ const Header: React.FC = () => {
       key: '/ai-analysis',
       icon: <RobotOutlined />,
       label: 'AI分析',
+    },
+    {
+      key: '/forecast',
+      icon: <LineChartOutlined />,
+      label: '需求预测',
+      children: [
+        {
+          key: '/forecast',
+          icon: <BarChartOutlined />,
+          label: '预测仪表板',
+        },
+        {
+          key: '/forecast/customers',
+          icon: <TeamOutlined />,
+          label: '客户分析',
+        },
+        {
+          key: '/forecast/demand',
+          icon: <LineChartOutlined />,
+          label: '需求预测',
+        },
+        {
+          key: '/forecast/policy',
+          icon: <ExperimentOutlined />,
+          label: '策略沙盒',
+        },
+      ],
     },
     {
       key: '/operation-logs',
@@ -65,13 +106,35 @@ const Header: React.FC = () => {
 
   const handleUserMenuClick = ({ key }: { key: string }) => {
     if (key === 'logout') {
-      localStorage.removeItem('token');
+      logout();
       navigate('/login');
     } else if (key === 'profile') {
       navigate('/profile');
     } else if (key === 'settings') {
       navigate('/settings');
     }
+  };
+
+  const getRoleColor = (role: string) => {
+    const colors: Record<string, string> = {
+      admin: 'red',
+      manager: 'orange',
+      analyst: 'blue',
+      operator: 'green',
+      viewer: 'default',
+    };
+    return colors[role] || 'default';
+  };
+
+  const getRoleLabel = (role: string) => {
+    const labels: Record<string, string> = {
+      admin: '管理员',
+      manager: '经理',
+      analyst: '分析师',
+      operator: '操作员',
+      viewer: '查看者',
+    };
+    return labels[role] || role;
   };
 
   return (
@@ -140,8 +203,16 @@ const Header: React.FC = () => {
               size="small" 
               icon={<UserOutlined />} 
               style={{ marginRight: 8 }}
+              src={user?.avatar}
             />
-            <span style={{ fontSize: 14 }}>管理员</span>
+            <Space size={4}>
+              <span style={{ fontSize: 14 }}>{user?.username || '用户'}</span>
+              {user?.role && (
+                <Tag color={getRoleColor(user.role)} style={{ marginLeft: 4 }}>
+                  {getRoleLabel(user.role)}
+                </Tag>
+              )}
+            </Space>
           </div>
         </Dropdown>
       </div>

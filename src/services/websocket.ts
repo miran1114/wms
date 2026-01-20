@@ -13,7 +13,7 @@ class WebSocketService {
   }
 
   private setupSocket() {
-    const wsUrl = import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:8888';
+    const wsUrl = import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:8000';
     
     this.socket = io(wsUrl, {
       transports: ['websocket', 'polling'],

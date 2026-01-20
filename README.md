@@ -1,53 +1,88 @@
 # 智能仓库管理系统（WMS）
 
-> 版本：v0.1.0 · 状态：开发中
+> 版本：v2.0.0 · 状态：生产就绪
 
 ## 1. 项目概述
 
-- 项目名称：智能仓库管理系统（WMS）
-- 版本号：v0.1.0
-- 核心功能：
-  - 库存管理（展示、搜索、排序、增减库存、定价调整）
-  - AI 分析（安全库存建议、动态定价、促销推荐），对接本地 Ollama 的 Qwen2.5-14b
-  - 市场数据与价格历史、库存历史记录与可视化
-  - 操作日志记录与查询
-- 技术栈：
-  - 后端：Python 3.10+、Django 5.x、Django REST Framework、SQLite（默认）
-  - 前端：React 18 + TypeScript、Vite、Ant Design、@ant-design/charts
-  - AI：LangChain + Ollama（本地 API `http://localhost:11434`）
-- 项目状态：开发中（Dev）
+一个功能完整、生产就绪的仓库管理系统，集成了AI驱动的库存优化、需求预测和智能定价推荐功能。
+
+### 核心功能
+
+#### 库存管理
+- 实时库存跟踪、库存更新和警报
+- 完整的操作日志审计追踪
+- 价格历史和库存历史可视化
+
+#### AI分析
+- 使用LLM（Ollama/Qwen）进行智能库存分析
+- AI驱动的动态定价建议
+- 安全库存和促销推荐
+
+#### 需求预测（新功能！）
+- 基于历史偏差模式的需求预测
+- 客户行为分析和预测准确性跟踪
+- 库存策略沙盒 - 模拟不同服务水平和成本
+- 偏差分析和MAPE追踪
+
+#### 用户管理
+- 基于角色的访问控制（管理员、经理、分析师、操作员、查看者）
+- JWT安全认证
+- 用户配置和登录历史追踪
+
+### 技术栈
+
+| 层级 | 技术 |
+|------|------|
+| 后端 | Django 5.x, Django REST Framework, PostgreSQL, Redis |
+| 前端 | React 18, TypeScript, Ant Design, Zustand, Vite |
+| AI | LangChain, Ollama (Qwen2.5) |
+| 基础设施 | Docker, Nginx, Gunicorn |
 
 ## 2. 环境要求
 
-- 系统依赖：
-  - Python ≥ 3.10
-  - Node.js ≥ 18.x（推荐 LTS）
-- 第三方服务依赖：
-  - 可选：Ollama（本地）及模型 `qwen2.5:14b`
-- 环境变量（后端 `.env`，可选）：
+- Python ≥ 3.11
+- Node.js ≥ 18.x（推荐 LTS）
+- Docker & Docker Compose（用于生产部署）
+- Ollama（用于AI功能）
+
+### 环境变量（后端）
 
 | 变量名 | 说明 | 默认值 |
 |---|---|---|
-| `DJANGO_SECRET_KEY` | Django 密钥 | `dev-secret-key` |
+| `SECRET_KEY` | Django 密钥 | 必需 |
+| `DEBUG` | 调试模式 | `False` |
+| `DATABASE_URL` | PostgreSQL 连接URL | sqlite |
+| `REDIS_URL` | Redis 连接URL | 无 |
 | `OLLAMA_BASE_URL` | Ollama 地址 | `http://localhost:11434` |
-| `OLLAMA_MODEL` | 模型名 | `qwen2.5:14b` |
+| `OLLAMA_MODEL` | 模型名 | `qwen2.5:7b` |
 
-- 环境变量（前端 `.env`）：
+### 环境变量（前端）
 
 | 变量名 | 说明 | 默认值 |
 |---|---|---|
-| `VITE_API_BASE_URL` | 后端 API 基址 | `http://localhost:8888` |
-| `VITE_OLLAMA_BASE_URL` | Ollama 地址 | `http://localhost:11434` |
-| `VITE_OLLAMA_MODEL` | 模型名 | `qwen2.5:14b` |
+| `VITE_API_BASE_URL` | 后端 API 基址 | `http://localhost:8000/api` |
+| `VITE_WS_URL` | WebSocket 地址 | `ws://localhost:8000/ws` |
 
 ## 3. 安装部署指南
 
-```bash
-# 克隆仓库（HTTPS）
-git clone <repo-url> wms
-cd wms
+### 快速开始（开发环境）
 
-# 后端依赖安装
+```bash
+# 克隆仓库
+git clone <repo-url> wms
+cd wms/warehouse-management-system
+
+# Windows用户运行
+scripts\start-dev.bat
+
+# Linux/Mac用户运行
+chmod +x scripts/start-dev.sh
+./scripts/start-dev.sh
+```
+
+### 手动安装
+
+#### 后端依赖安装
 python -m pip install -r requirements.txt
 
 # 数据库迁移（SQLite 默认）

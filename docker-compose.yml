@@ -1,0 +1,104 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: wms_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wms_db
+      POSTGRES_USER: wms_user
+      POSTGRES_PASSWORD: wms_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wms_user -d wms_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wms_network
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: wms_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wms_network
+
+  # Django Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: wms_backend
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgres://wms_user:wms_password@db:5432/wms_db
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - DEBUG=${DEBUG:-False}
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend
+      - CORS_ALLOWED_ORIGINS=http://localhost,http://localhost:3000
+      - OLLAMA_BASE_URL=http://ollama:11434
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - static_files:/app/staticfiles
+      - media_files:/app/media
+    networks:
+      - wms_network
+
+  # React Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: wms_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - wms_network
+
+  # Ollama for AI (optional)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: wms_ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - wms_network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_files:
+  media_files:
+  ollama_data:
+
+networks:
+  wms_network:
+    driver: bridge

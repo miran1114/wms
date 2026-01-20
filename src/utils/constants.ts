@@ -1,13 +1,13 @@
 // API配置
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8888',
+  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3,
 } as const;
 
 // WebSocket配置
 export const WS_CONFIG = {
-  URL: import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:8888',
+  URL: import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:8000',
   RECONNECT_ATTEMPTS: 5,
   RECONNECT_DELAY: 1000,
 } as const;

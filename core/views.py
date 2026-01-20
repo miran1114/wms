@@ -216,6 +216,8 @@ class InventoryStockUpdateView(APIView):
             Transaction.objects.create(product=inv.product, quantity=change, kind=Transaction.KIND_OUT)
         inv.save(update_fields=["quantity"])
         OperationLog.objects.create(
+            user_id=str(request.user.id) if request.user.is_authenticated else "system",
+            username=request.user.username if request.user.is_authenticated else "系统",
             operation_type="STOCK_UPDATE",
             operation_detail=f"商品ID={pk} {operation} {change}",
             ip_address=request.META.get("REMOTE_ADDR", ""),
@@ -236,6 +238,8 @@ class InventoryPriceUpdateView(APIView):
         PricingLog.objects.create(product=p, old_price=old, new_price=price, reason=data.get("reason") or "价格调整")
         inv = Inventory.objects.get(product=p)
         OperationLog.objects.create(
+            user_id=str(request.user.id) if request.user.is_authenticated else "system",
+            username=request.user.username if request.user.is_authenticated else "系统",
             operation_type="PRICE_UPDATE",
             operation_detail=f"商品ID={pk} 改价 {float(old)} -> {price}",
             ip_address=request.META.get("REMOTE_ADDR", ""),
@@ -249,6 +253,8 @@ class InventoryDeleteView(APIView):
     def delete(self, request: Request, pk: int) -> Response:  # type: ignore[override]
         Product.objects.filter(id=pk).delete()
         OperationLog.objects.create(
+            user_id=str(request.user.id) if request.user.is_authenticated else "system",
+            username=request.user.username if request.user.is_authenticated else "系统",
             operation_type="DELETE",
             operation_detail=f"删除商品ID={pk}",
             ip_address=request.META.get("REMOTE_ADDR", ""),
